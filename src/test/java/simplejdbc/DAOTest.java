@@ -9,92 +9,103 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 public class DAOTest {
-	private DAO myDAO; // L'objet à tester
-	private DataSource myDataSource; // La source de données à utiliser
-	
 
-	@Before
-	public void setUp() throws SQLException {
-		myDataSource = DataSourceFactory.getDataSource();
-		myDAO = new DAO(myDataSource);
-	}
-	
-	/**
-	 * Test of numberOfCustomers method, of class DAO.
-	 * @throws simplejdbc.DAOException
-	 */
-	@Test
-	public void testNumberOfCustomers() throws DAOException {
-		int result = myDAO.numberOfCustomers();
-		assertEquals(13, result);
-	}
+    private DAO myDAO; // L'objet à tester
+    private DataSource myDataSource; // La source de données à utiliser
 
-	/**
-	 * Test of numberOfOrdersForCustomer method, of class DAO.
-	 * @throws simplejdbc.DAOException
-	 */
-	@Test
-	public void testNumberOfOrdersForCustomer() throws DAOException {
-		int customerId = 36;
-		int expResult = 2;
-		int result = myDAO.numberOfOrdersForCustomer(customerId);
-		assertEquals(expResult, result); // Le client 36 a 2 bons de commande
-	}
+    @Before
+    public void setUp() throws SQLException {
+        myDataSource = DataSourceFactory.getDataSource();
+        myDAO = new DAO(myDataSource);
+    }
 
-	/**
-	 * Test of findCustomer method, of class DAO.
-	 * @throws simplejdbc.DAOException
-	 */
-	@Test
-	public void testFindCustomer() throws DAOException {
-		int customerID = 1;
-		CustomerEntity result = myDAO.findCustomer(customerID);
-		assertEquals("Jumbo Eagle Corp", result.getName());
-	}
+    /**
+     * Test of numberOfCustomers method, of class DAO.
+     *
+     * @throws simplejdbc.DAOException
+     */
+    @Test
+    public void testNumberOfCustomers() throws DAOException {
+        int result = myDAO.numberOfCustomers();
+        assertEquals(13, result);
+    }
 
-	/**
-	 * Test of customersInState method, of class DAO.
-	 * @throws simplejdbc.DAOException
-	 */
-	@Test
-	public void testCustomersInState() throws DAOException {
-		String state = "CA";
-		List<CustomerEntity> result = myDAO.customersInState(state);
-		assertEquals(4, result.size());
-	}
+    /**
+     * Test of numberOfOrdersForCustomer method, of class DAO.
+     *
+     * @throws simplejdbc.DAOException
+     */
+    @Test
+    public void testNumberOfOrdersForCustomer() throws DAOException {
+        int customerId = 36;
+        int expResult = 2;
+        int result = myDAO.numberOfOrdersForCustomer(customerId);
+        assertEquals(expResult, result); // Le client 36 a 2 bons de commande
+    }
 
-	/**
-	 * Test of deleteCustomer method, of class DAO.
-	 * @throws simplejdbc.DAOException
-	 */
-	@Test
-	public void testDeleteUnknownCustomer () throws DAOException {
-		int id = 999; // n'existe pas
-		assertEquals(0, myDAO.deleteCustomer(id));
-	}
+    /**
+     * Test of findCustomer method, of class DAO.
+     *
+     * @throws simplejdbc.DAOException
+     */
+    @Test
+    public void testFindCustomer() throws DAOException {
+        int customerID = 1;
+        CustomerEntity result = myDAO.findCustomer(customerID);
+        assertEquals("Jumbo Eagle Corp", result.getName());
+    }
 
-	/**
-	 * Test of deleteCustomer method, of class DAO.
-	 * @throws simplejdbc.DAOException
-	 */
-	@Test @Ignore // Ce test est désactivé, pourquoi ?
-	public void testDeleteCustomerWithoutOrder () throws DAOException {
-		int id = 25; // Le client 25 n'a pas de bon de commande
-		assertEquals(1, myDAO.deleteCustomer(id));
-	}
+    /**
+     * Test of customersInState method, of class DAO.
+     *
+     * @throws simplejdbc.DAOException
+     */
+    @Test
+    public void testCustomersInState() throws DAOException {
+        String state = "CA";
+        List<CustomerEntity> result = myDAO.customersInState(state);
+        assertEquals(4, result.size());
+    }
 
-	/**
-	 * Test of deleteCustomer method, of class DAO.
-	 */
-	@Test
-	public void testDeleteCustomerWithOrder () {
-		int id = 1; // Le client 1 a des bons de commande
-		try {
-			myDAO.deleteCustomer(id); // Cette ligne doit lever une exception
-			fail(); // On ne doit pas passer par ici
-		} catch (DAOException e) {
-			// On doit passer par ici, violation d'intégrité référentielle
-		}
-	}
-	
+    /**
+     * Test of deleteCustomer method, of class DAO.
+     *
+     * @throws simplejdbc.DAOException
+     */
+    @Test
+    public void testDeleteUnknownCustomer() throws DAOException {
+        int id = 999; // n'existe pas
+        assertEquals(0, myDAO.deleteCustomer(id));
+    }
+
+    /**
+     * Test of deleteCustomer method, of class DAO.
+     *
+     * @throws simplejdbc.DAOException
+     */
+    @Test
+    @Ignore // Ce test est désactivé, pourquoi ?
+    // Parce que ce test n'est pas pertinent
+    // On teste déjà si on peut supprimer un client qui a un bon de commande
+    // donc on peut forcément supprimer un client sans bon de commande,
+    // c'est un peu qui peut le plus peut le moins :)
+    public void testDeleteCustomerWithoutOrder() throws DAOException {
+        int id = 25; // Le client 25 n'a pas de bon de commande
+        assertEquals(1, myDAO.deleteCustomer(id));
+    }
+
+    /**
+     * Test of deleteCustomer method, of class DAO.
+     */
+    @Test
+    public void testDeleteCustomerWithOrder() {
+        int id = 1; // Le client 1 a des bons de commande
+        try {
+            myDAO.deleteCustomer(id); // Cette ligne doit lever une exception
+            fail(); // On ne doit pas passer par ici
+        } catch (DAOException e) {
+            // On doit passer par ici, violation d'intégrité référentielle
+        }
+    }
+
 }
